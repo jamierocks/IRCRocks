@@ -10,8 +10,12 @@ import org.spacehq.iirc.util.PomUtil;
 
 import javax.swing.JOptionPane;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IrcProtocol extends PircBot {
+	private static final Pattern MODE_PATTERN = Pattern.compile(":([A-Za-z0-9.]+) MODE ([A-Za-z0-9#]+) ([A-Za-z0-9+-:]+)");
+
 	private IrcManager manager;
 	private String host;
 	private int port;
@@ -37,6 +41,27 @@ public class IrcProtocol extends PircBot {
 
 	public int getHostPort() {
 		return this.port;
+	}
+
+	@Override
+	protected void handleLine(String line) {
+		Matcher matcher = MODE_PATTERN.matcher(line);
+		if(matcher.find()) {
+			String source = matcher.group(1);
+			String target = matcher.group(2);
+			String mode = matcher.group(3);
+			if(mode.startsWith(":")) {
+				mode = mode.substring(1);
+			}
+
+			if(target.startsWith("#")) {
+				this.onMode(target, source, mode);
+			} else {
+				this.onUserMode(target, source, mode);
+			}
+		} else {
+			super.handleLine(line);
+		}
 	}
 
 	@Override
@@ -157,16 +182,12 @@ public class IrcProtocol extends PircBot {
 		this.manager.getChannel(this, channel).outputMessage(HtmlColor.Red + String.valueOf(userCount) + HtmlColor.End + HtmlColor.Green + " user" + (userCount > 1 ? "s" : "") + " are currently in " + channel + ". Topic: " + topic + HtmlColor.End);
 	}
 
-	@Override
-	protected void onMode(String channel, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		String parts[] = mode.split(":");
-		this.manager.getChannel(this, channel).outputMessage(HtmlColor.Green + "Mode of " + parts[0].trim() + " set to " + parts[1] + " by " + sourceNick + "." + HtmlColor.End);
+	private void onMode(String channel, String sourceNick, String mode) {
+		this.manager.getChannel(this, channel).outputMessage(HtmlColor.Green + "Mode of " + channel + " set to " + mode + " by " + sourceNick + "." + HtmlColor.End);
 	}
 
-	@Override
-	protected void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		String parts[] = mode.split(":");
-		this.manager.getChannel(this, this.host).outputMessage(HtmlColor.Green + "Mode of " + parts[0].trim() + " set to " + parts[1] + " by " + sourceNick + "." + HtmlColor.End);
+	private void onUserMode(String targetNick, String sourceNick, String mode) {
+		this.manager.getChannel(this, this.host).outputMessage(HtmlColor.Green + "Mode of " + targetNick + " set to " + mode + " by " + sourceNick + "." + HtmlColor.End);
 	}
 
 	@Override

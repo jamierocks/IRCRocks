@@ -68,8 +68,8 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
 				String hostData[] = hostnameField.getText().split(":");
-				String host = hostData[0];
-				int port = 6667;
+				final String host = hostData[0];
+				final int port;
 				if(hostData.length > 1) {
 					try {
 						port = Integer.parseInt(hostData[1]);
@@ -77,11 +77,13 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 						JOptionPane.showMessageDialog(null, "Invalid port specified.", "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
+				} else {
+					port = 6667;
 				}
 
-				String pass = String.valueOf(passwordField.getPassword());
-				String nick = nicknameField.getText();
-				String chnls[] = channelsField.getText().split(",");
+				final String pass = String.valueOf(passwordField.getPassword());
+				final String nick = nicknameField.getText();
+				final String chnls[] = channelsField.getText().split(",");
 				if(host.length() == 0 || nick.length() == 0 || chnls.length == 0 || chnls[0].length() == 0) {
 					JOptionPane.showMessageDialog(null, "Please fill out all of the required fields.", "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -91,33 +93,38 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 				passwordField.setText("");
 				nicknameField.setText("");
 				channelsField.setText("");
-				IrcProtocol protocol = null;
-				for(IrcProtocol p : channels.keySet()) {
-					if(p.getHostName().equals(host) && p.getHostPort() == port && p.getNick().equals(nick)) {
-						protocol = p;
-					}
-				}
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						IrcProtocol protocol = null;
+						for(IrcProtocol p : channels.keySet()) {
+							if(p.getHostName().equals(host) && p.getHostPort() == port && p.getNick().equals(nick)) {
+								protocol = p;
+							}
+						}
 
-				if(protocol == null) {
-					try {
-						protocol = new IrcProtocol(GuiIrcManager.this, host, port, pass, nick);
-					} catch(Exception e) {
-						StringWriter writer = new StringWriter();
-						e.printStackTrace(new PrintWriter(writer));
-						JOptionPane.showMessageDialog(null, writer.toString(), "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-				}
+						if(protocol == null) {
+							try {
+								protocol = new IrcProtocol(GuiIrcManager.this, host, port, pass, nick);
+							} catch(Exception e) {
+								StringWriter writer = new StringWriter();
+								e.printStackTrace(new PrintWriter(writer));
+								JOptionPane.showMessageDialog(null, writer.toString(), "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+						}
 
-				for(String channel : chnls) {
-					if(channel.contains(":")) {
-						channel = channel.substring(0, channel.indexOf(":"));
-						String key = channel.substring(channel.indexOf(":") + 1, channel.length());
-						protocol.joinChannel(channel, key);
-					} else {
-						protocol.joinChannel(channel);
+						for(String channel : chnls) {
+							if(channel.contains(":")) {
+								channel = channel.substring(0, channel.indexOf(":"));
+								String key = channel.substring(channel.indexOf(":") + 1, channel.length());
+								protocol.joinChannel(channel, key);
+							} else {
+								protocol.joinChannel(channel);
+							}
+						}
 					}
-				}
+				}).start();
 			}
 		});
 
