@@ -46,10 +46,10 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 		loginPanel.setLayout(new GridLayoutManager(7, 4, new Insets(0, 0, 0, 0), -1, -1, false, false));
 		loginPanel.setBackground(new Color(-3355444));
 		loginPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), null, 0, 0, null, null));
-		final JTextField hostname = new JTextField();
-		final JPasswordField password = new JPasswordField();
-		final JTextField nickname = new JTextField();
-		final JTextField channels = new JTextField();
+		final JTextField hostnameField = new JTextField();
+		final JPasswordField passwordField = new JPasswordField();
+		final JTextField nicknameField = new JTextField();
+		final JTextField channelsField = new JTextField();
 		JLabel hostnameLabel = new JLabel();
 		hostnameLabel.setHorizontalAlignment(4);
 		hostnameLabel.setText("Hostname");
@@ -67,7 +67,7 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 		joinButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				String hostData[] = hostname.getText().split(":");
+				String hostData[] = hostnameField.getText().split(":");
 				String host = hostData[0];
 				int port = 6667;
 				if(hostData.length > 1) {
@@ -79,36 +79,55 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 					}
 				}
 
-				String pass = String.valueOf(password.getPassword());
-				String nick = nickname.getText();
-				String chnls[] = channels.getText().split(",");
+				String pass = String.valueOf(passwordField.getPassword());
+				String nick = nicknameField.getText();
+				String chnls[] = channelsField.getText().split(",");
 				if(host.length() == 0 || nick.length() == 0 || chnls.length == 0 || chnls[0].length() == 0) {
 					JOptionPane.showMessageDialog(null, "Please fill out all of the required fields.", "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
-				hostname.setText("");
-				password.setText("");
-				nickname.setText("");
-				channels.setText("");
-				IrcProtocol protocol = getProtocol(host, port);
-				if(protocol != null) {
-					for(String channel : chnls) {
+				hostnameField.setText("");
+				passwordField.setText("");
+				nicknameField.setText("");
+				channelsField.setText("");
+				IrcProtocol protocol = null;
+				for(IrcProtocol p : channels.keySet()) {
+					if(p.getHostName().equals(host) && p.getHostPort() == port && p.getNick().equals(nick)) {
+						protocol = p;
+					}
+				}
+
+				if(protocol == null) {
+					try {
+						protocol = new IrcProtocol(GuiIrcManager.this, host, port, pass, nick);
+					} catch(Exception e) {
+						StringWriter writer = new StringWriter();
+						e.printStackTrace(new PrintWriter(writer));
+						JOptionPane.showMessageDialog(null, writer.toString(), "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+
+				for(String channel : chnls) {
+					if(channel.contains(":")) {
+						channel = channel.substring(0, channel.indexOf(":"));
+						String key = channel.substring(channel.indexOf(":") + 1, channel.length());
+						protocol.joinChannel(channel, key);
+					} else {
 						protocol.joinChannel(channel);
 					}
-				} else {
-					connect(host, port, pass, nick, chnls);
 				}
 			}
 		});
 
-		loginPanel.add(channels, new GridConstraints(5, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
+		loginPanel.add(channelsField, new GridConstraints(5, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
 		loginPanel.add(channelsLabel, new GridConstraints(5, 1, 1, 1, 8, 0, 0, 0, null, null, null, 1));
-		loginPanel.add(nickname, new GridConstraints(4, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
+		loginPanel.add(nicknameField, new GridConstraints(4, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
 		loginPanel.add(nicknameLabel, new GridConstraints(4, 1, 1, 1, 8, 0, 0, 0, null, null, null, 1));
-		loginPanel.add(password, new GridConstraints(3, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
+		loginPanel.add(passwordField, new GridConstraints(3, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
 		loginPanel.add(passwordLabel, new GridConstraints(3, 1, 1, 1, 8, 0, 0, 0, null, null, null, 1));
-		loginPanel.add(hostname, new GridConstraints(2, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
+		loginPanel.add(hostnameField, new GridConstraints(2, 2, 1, 1, 8, 1, 6, 0, null, new Dimension(150, -1), null));
 		loginPanel.add(hostnameLabel, new GridConstraints(2, 1, 1, 1, 8, 0, 0, 0, null, null, null, 1));
 		loginPanel.add(joinButton, new GridConstraints(6, 2, 1, 1, 0, 1, 3, 0, null, null, null));
 		loginPanel.add(new Spacer(), new GridConstraints(3, 3, 1, 1, 0, 1, 6, 1, null, null, null));
@@ -123,45 +142,9 @@ public class GuiIrcManager extends JFrame implements IrcManager {
 		this.tabs.addTab("Login", null, loginPanel, null);
 		contentPane.add(this.tabs, new GridConstraints(0, 0, 1, 1, 0, 3, 3, 3, null, new Dimension(1200, 675), null));
 		this.setContentPane(contentPane);
+		this.getRootPane().setDefaultButton(joinButton);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
-	}
-
-	public void connect(final String hostname, final int port, final String password, final String nickname, final String initialChannels[]) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				IrcProtocol protocol;
-				try {
-					protocol = new IrcProtocol(GuiIrcManager.this, hostname, port, password, nickname);
-				} catch(Exception e) {
-					StringWriter writer = new StringWriter();
-					e.printStackTrace(new PrintWriter(writer));
-					JOptionPane.showMessageDialog(null, writer.toString(), "Could not connect to IRC server", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-
-				for(String channel : initialChannels) {
-					if(channel.contains(":")) {
-						channel = channel.substring(0, channel.indexOf(":"));
-						String key = channel.substring(channel.indexOf(":") + 1, channel.length());
-						protocol.joinChannel(channel, key);
-					} else {
-						protocol.joinChannel(channel);
-					}
-				}
-			}
-		}, "IrcConnectThread").start();
-	}
-
-	protected IrcProtocol getProtocol(String hostname, int port) {
-		for(IrcProtocol protocol : this.channels.keySet()) {
-			if(protocol.getHostName().equals(hostname) && protocol.getHostPort() == port) {
-				return protocol;
-			}
-		}
-
-		return null;
 	}
 
 	@Override
