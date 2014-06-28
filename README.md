@@ -19,7 +19,8 @@ After logging into a server and channel(s), tabs will open up for the server's i
 --------
 
 IIRC uses Maven to manage dependencies. Simply run 'mvn clean install' in the source's directory.
-You can also download a build <b>[here](http://build.spacehq.org/browse/IIRC-MAIN)</b>.
+Snapshots (if any exist) can be downloaded <b>[here](http://repo.spacehq.org/content/repositories/snapshots/org/spacehq/iirc)</b>.
+Releases (if any exist) can be downloaded <b>[here](http://repo.spacehq.org/content/repositories/release/org/spacehq/iirc)</b>.
 
 
 <b>License</b>
