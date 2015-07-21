@@ -11,7 +11,7 @@ After logging into a server and channel(s), tabs will open up for the server's i
 ## Building the Source
 IIRC uses Maven to manage dependencies. Simply run 'mvn clean install' in the source's directory.
 
-Builds can be downloaded **[here](http://build.spacehq.org/job/IIRC)**.
+Builds can be downloaded **[here](https://build.spacehq.org/job/IIRC)**.
 
 ## License
 IIRC is licensed under the **[MIT license](http://www.opensource.org/licenses/mit-license.html)**.
