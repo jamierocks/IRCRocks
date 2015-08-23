@@ -7,6 +7,7 @@ import org.spacehq.iirc.IrcChannel;
 import org.spacehq.iirc.IrcManager;
 import org.spacehq.iirc.IrcProtocol;
 import org.spacehq.iirc.util.Constants;
+import uk.jamierocks.ircrocks.IrcCommands;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -36,6 +37,8 @@ public class GuiIrcManager extends JFrame implements IrcManager {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch(UnsupportedLookAndFeelException e) {
         }
+
+        IrcCommands.init();
 
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1, false, false));

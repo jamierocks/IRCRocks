@@ -114,7 +114,7 @@ public class IrcProtocol extends PircBot {
     }
 
     @Override
-    protected void onAction(String sender, String login, String hostname, String target, String action) {
+    public void onAction(String sender, String login, String hostname, String target, String action) {
         this.manager.getChannel(this, target).outputMessage(HtmlColor.Green + " * " + sender + HtmlColor.End + " " + HtmlColor.Red + HtmlEscaping.escape(action) + HtmlColor.End);
     }
 

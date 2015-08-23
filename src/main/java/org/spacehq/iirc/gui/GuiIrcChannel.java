@@ -3,11 +3,11 @@ package org.spacehq.iirc.gui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.spacehq.iirc.IrcChannel;
-import org.spacehq.iirc.IrcCommands;
 import org.spacehq.iirc.IrcManager;
 import org.spacehq.iirc.IrcProtocol;
 import org.spacehq.iirc.IrcUser;
 import org.spacehq.iirc.html.HtmlColor;
+import uk.jamierocks.ircrocks.IrcCommands;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
