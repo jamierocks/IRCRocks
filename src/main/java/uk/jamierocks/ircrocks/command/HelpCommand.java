@@ -1,19 +1,14 @@
 package uk.jamierocks.ircrocks.command;
 
-import com.sk89q.intake.CommandException;
-import com.sk89q.intake.context.CommandLocals;
-import com.sk89q.intake.util.auth.AuthorizationException;
 import org.spacehq.iirc.IrcChannel;
+import org.spacehq.iirc.IrcProtocol;
 import org.spacehq.iirc.html.HtmlColor;
 import org.spacehq.iirc.html.HtmlEscaping;
 
 public class HelpCommand extends BaseCommand {
 
     @Override
-    public boolean call(String arguments, CommandLocals locals, String[] parentCommands)
-            throws CommandException, AuthorizationException {
-        IrcChannel channel = locals.get(IrcChannel.class);
-
+    public void call(IrcChannel channel, IrcProtocol protocol, String[] args) {
         channel.outputMessage(HtmlColor.Blue + "Available commands:" + HtmlColor.End);
         channel.outputMessage(HtmlColor.Green + HtmlEscaping.escape("/me <action> - ") + HtmlColor.End + HtmlColor.Red
                 + "Sends an action message." + HtmlColor.End);
@@ -53,6 +48,5 @@ public class HelpCommand extends BaseCommand {
         channel.outputMessage(
                 HtmlColor.Green + HtmlEscaping.escape("/leave <channel> - ") + HtmlColor.End + HtmlColor.Red
                         + "Leaves the channel." + HtmlColor.End);
-        return true;
     }
 }
