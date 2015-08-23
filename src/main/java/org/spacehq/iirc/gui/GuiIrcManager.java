@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.spacehq.iirc.IrcChannel;
 import org.spacehq.iirc.IrcManager;
 import org.spacehq.iirc.IrcProtocol;
-import org.spacehq.iirc.util.PomUtil;
+import org.spacehq.iirc.util.Constants;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -31,7 +31,7 @@ public class GuiIrcManager extends JFrame implements IrcManager {
     private Map<IrcProtocol, Map<String, GuiIrcChannel>> channels = new HashMap<IrcProtocol, Map<String, GuiIrcChannel>>();
 
     public GuiIrcManager() {
-        super("IIRC " + PomUtil.getVersion());
+        super("IRCRocks " + Constants.getVersion());
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch(UnsupportedLookAndFeelException e) {

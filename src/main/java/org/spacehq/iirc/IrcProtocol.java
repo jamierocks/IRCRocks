@@ -6,7 +6,7 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.spacehq.iirc.html.HtmlColor;
 import org.spacehq.iirc.html.HtmlEscaping;
-import org.spacehq.iirc.util.PomUtil;
+import org.spacehq.iirc.util.Constants;
 
 import javax.swing.*;
 import java.util.Date;
@@ -27,7 +27,7 @@ public class IrcProtocol extends PircBot {
         this.setName(name);
         this.setLogin(name);
         this.setAutoNickChange(true);
-        this.setVersion(PomUtil.getVersion());
+        this.setVersion(Constants.getVersion());
         if(password != null && !password.isEmpty()) {
             this.connect(this.host, this.port, password);
         } else {

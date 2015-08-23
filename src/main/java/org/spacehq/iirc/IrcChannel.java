@@ -3,17 +3,17 @@ package org.spacehq.iirc;
 import java.util.List;
 
 public interface IrcChannel {
-    public String getName();
+    String getName();
 
-    public List<IrcUser> getUsers();
+    List<IrcUser> getUsers();
 
-    public IrcUser getUser(String name);
+    IrcUser getUser(String name);
 
-    public boolean isOnline(String name);
+    boolean isOnline(String name);
 
-    public void addUser(String name);
+    void addUser(String name);
 
-    public void removeUser(String name);
+    void removeUser(String name);
 
-    public void outputMessage(String chat);
+    void outputMessage(String chat);
 }

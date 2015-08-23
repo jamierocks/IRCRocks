@@ -24,6 +24,12 @@ dependencies {
     compile 'pircbot:pircbot:1.5.0'
 }
 
+jar  {
+    manifest {
+        attributes 'Main-Class': 'org.spacehq.iirc.gui.GuiIrcManager'
+    }
+}
+
 license {
     header file('HEADER.txt')
     strictCheck true
