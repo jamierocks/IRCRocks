@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+
+    id 'idea'
+    id 'eclipse'
+
+    id 'com.github.hierynomus.license' version '0.11.0'
+}
+
+defaultTasks 'licenseFormat'
+
+group = 'uk.jamierocks'
+archivesBaseName = project.name.toLowerCase()
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'pircbot:pircbot:1.5.0'
+}
+
+license {
+    header file('HEADER.txt')
+    strictCheck true
+    include "**/*.java"
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}

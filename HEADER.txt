@@ -1,4 +1,4 @@
-The MIT License (MIT)
+This file is part of IRCRocks, licensed under the MIT License (MIT).
 
 Copyright (C) 2014-2015 Steveice10
 Copyright (c) 2015, Jamie Mansfield <https://www.jamierocks.uk/>
