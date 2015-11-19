@@ -22,36 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package uk.jamierocks.ircrocks;
+package uk.jamierocks.ircrocks.gui;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import uk.jamierocks.ircrocks.util.Constants;
+import javafx.event.ActionEvent;
+import javafx.scene.control.TextField;
 
-/**
- * The application entry point.
- */
-public class Main extends Application {
+public class LoginController {
 
-    public static Stage mainStage;
+    public TextField serverHostField;
+    public TextField usernameField;
+    public TextField nicknameField;
+    public TextField channelsField;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public void onJoin(ActionEvent actionEvent) {
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        mainStage = primaryStage;
-
-        Parent root = new FXMLLoader(ClassLoader.getSystemResource("Login.fxml")).load();
-        Scene scene = new Scene(root);
-
-        mainStage.setTitle("IRCRocks v" + Constants.VERSION);
-        mainStage.setResizable(false);
-        mainStage.show();
-        mainStage.setScene(scene);
     }
 }
