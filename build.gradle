@@ -5,6 +5,7 @@ plugins {
     id 'eclipse'
 
     id 'com.github.hierynomus.license' version '0.11.0'
+    id 'com.github.johnrengelman.shadow' version '1.2.2'
 }
 
 defaultTasks 'licenseFormat'
@@ -25,13 +26,20 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.guava:guava:18.0'
     compile 'pircbot:pircbot:1.5.0'
     compile 'com.sk89q:intake:3.1.2'
 }
 
-jar  {
+jar {
+    classifier = 'base'
+
     manifest {
-        attributes 'Main-Class': 'org.spacehq.iirc.gui.GuiIrcManager'
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': version,
+                'Main-Class': 'uk.jamierocks.ircrocks.Main'
+        )
     }
 }
 
@@ -43,6 +51,14 @@ license {
     mapping {
         java = 'SLASHSTAR_STYLE'
     }
+}
+
+shadowJar {
+    classifier = ''
+}
+
+artifacts {
+    archives shadowJar
 }
 
 task wrapper(type: Wrapper) {

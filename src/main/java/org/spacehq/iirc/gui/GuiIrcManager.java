@@ -30,8 +30,8 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.spacehq.iirc.IrcChannel;
 import org.spacehq.iirc.IrcManager;
 import org.spacehq.iirc.IrcProtocol;
-import org.spacehq.iirc.util.Constants;
 import uk.jamierocks.ircrocks.IrcCommands;
+import uk.jamierocks.ircrocks.util.Constants;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -48,15 +48,12 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiIrcManager extends JFrame implements IrcManager {
-    public static void main(String[] args) {
-        new GuiIrcManager().setVisible(true);
-    }
 
     private JTabbedPane tabs;
     private Map<IrcProtocol, Map<String, GuiIrcChannel>> channels = new HashMap<IrcProtocol, Map<String, GuiIrcChannel>>();
 
     public GuiIrcManager() {
-        super("IRCRocks " + Constants.getVersion());
+        super("IRCRocks " + Constants.VERSION);
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch(UnsupportedLookAndFeelException e) {

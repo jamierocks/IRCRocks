@@ -22,10 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spacehq.iirc.util;
+package uk.jamierocks.ircrocks.util;
 
-public class Constants {
-    public static String getVersion() {
-        return "1.0-SNAPSHOT";
+import com.google.common.base.MoreObjects;
+import uk.jamierocks.ircrocks.Main;
+
+/**
+ * Contains application-wide constants.
+ */
+public final class Constants {
+
+    public static final String VERSION;
+
+    static {
+        VERSION = MoreObjects.firstNonNull(Main.class.getPackage().getImplementationVersion(), "UNKNOWN");
+    }
+
+    private Constants() {
     }
 }

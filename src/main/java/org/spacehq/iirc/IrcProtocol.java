@@ -30,7 +30,7 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.spacehq.iirc.html.HtmlColor;
 import org.spacehq.iirc.html.HtmlEscaping;
-import org.spacehq.iirc.util.Constants;
+import uk.jamierocks.ircrocks.util.Constants;
 
 import javax.swing.*;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class IrcProtocol extends PircBot {
         this.setName(name);
         this.setLogin(name);
         this.setAutoNickChange(true);
-        this.setVersion(Constants.getVersion());
+        this.setVersion(Constants.VERSION);
         if(password != null && !password.isEmpty()) {
             this.connect(this.host, this.port, password);
         } else {
