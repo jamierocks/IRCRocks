@@ -36,6 +36,7 @@ license {
     header file('HEADER.txt')
     strictCheck true
     include "**/*.java"
+    exclude "**/com/intellij/**/*.java"
     mapping {
         java = 'SLASHSTAR_STYLE'
     }
